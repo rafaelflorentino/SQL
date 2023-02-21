@@ -228,6 +228,72 @@ INSERT INTO vw_produto_bebida -- não usar insert em view
 -- Dropar uma view
 DROP VIEW <nome da view>
 
+-- Gatilhos trigger sintaxe PL/SQL
+CREATE OR REPLACE TRIGGER nome_gatilho
+   BEFORE | AFTER
+   DELETE OR INSERT OR UPDATE OF coluna1, coluna2, ...
+   ON nome_da_tabela
+   REFERENCING OLD AS nome NEW AS nome
+   FOR EACH ROW WHEN condição
+   DECLARE
+      área de declaração
+      BEGIN
+      área de comandos
+   END ; 
+
+CREATE OR REPLACE TRIGGER trg_estoque
+   BEFORE INSERT OR DELETE OF qtde ON Item_Venda
+   REFERENCING OLD AS antigo NEW AS novo
+   FOR EACH ROW
+   BEGIN
+      IF inserting THEN
+         UDPATE PRODUTO SET estoque=estoque - :novo.qtde
+      ELSEIF deleting THEN
+      UDPATE PRODUTO SET estoque=estoque + :old.qtde
+      END-IF
+   END ; 
+
+ ALTER TRIGGER <nome do gatilho> ENABLE | DISABLE;
+ //EXEMPLO:
+ ALTER TRIGGER trg_estoque ENABLE;
+ ALTER TRIGGER trg_estoque DISABLE;
+ //EXEMPLO:
+ DROP TRIGGER <nome do gatilho>;
+ DROP TRIGGER trg_estoque;
+
+ -- Stored Procedure SQL coleção de comandos para otmizar o banco, programas dentro do banco
+DELIMITER $$ -- Delemitador $$ no lugar de dentro da procedure
+CREATE PROCEDURE selecionarTodosProdutos()
+BEGIN
+   SELECT * FROM PRODUTO;
+END
+DELIMITER;
+
+--CALL <nome do procedimento> (parâmetros);
+CALL selecionarTodosProdutos();
+
+-- OUT saida
+DELIMITER $$
+CREATE PROCEDURE sp_total_produtos (OUT total INT)
+BEGIN
+   SELECT count(*) INTO total FROM produtos;
+END
+DELIMITER;
+CALL sp_total_produtos (@total); -- salva na vaiavel select
+SELECT @total
+ 
+ --IN OUT
+ DELIMITER $$
+CREATE PROCEDURE quadrado(INOUT num INT)
+BEGIN
+   SET num = num * num;
+END $$
+DELIMITER;
+SET @valor = 5;
+CALL quadrado (@valor);
+SELECT @valor
+
+
 /*
 DDL = create, alter, drop;
 DML = select, delet, update, insert  ou DQL = delet, update, insert // sem select
