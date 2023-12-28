@@ -300,4 +300,57 @@ DML = select, delet, update, insert  ou DQL = delet, update, insert // sem selec
 DCL =
 DTL = Grant, Revoke, commit, savepoint, rollback
 */
+/*Create Table*/
+CREATE TABLE Empregado
+( Nome VARCHAR(15) NOT NULL,
+CodEmpregado CHAR(9) NOT NULL,
+DataNascimento DATE,
+Endereco VARCHAR(30),
+Sexo CHAR,
+Salario DECIMAL(10,2),
+CodSupervisor CHAR(9),
+CodDepto INT NOT NULL DEFAULT 0,
+CONSTRAINT PK_Emp PRIMARY KEY (CodEmpregado),
+CONSTRAINT FK_NumSup FOREIGN KEY (CodSupervisor)
+REFERENCES Empregado (CodEmpregado),
+CONSTRAINT FK_EmpDep FOREIGN KEY (CodDepto)
+REFERENCES Departamento (NumDepto) ON DELETE CASCADE
+);
 
+/*Alter Table*/
+ ALTER TABLE Produto ADD Marca VARCHAR(30);
+ ALTER TABLE Produto ALTER Preco SET DEFAULT 0;
+
+ /* Drop Table*/
+ 
+ DROP TABLE Produto;
+
+
+
+/* Any, Selecione Qualquer que encontrar*/
+
+SELECT * FROM Empregado
+ WHERE idade > ANY (SELECT idade FROM Empregado
+ WHERE depto = ‘ENG’);
+
+ /* All, Seleciona todos */ 
+ SELECT * FROM Empregado
+ WHERE idade > ALL (SELECT idade FROM Empregado
+ WHERE depto = 'ENG');
+
+ /* Exists, Verifica se existe ou nao existe */ 
+ SELECT * FROM Empregado E
+ WHERE NOT EXISTS (SELECT * FROM Dependente D
+ WHERE E.CPF = D.CPF);
+
+/* Union, une e não tem repetido */ 
+ SELECT Nome, Depto FROM Servidor UNION
+ SELECT Nome, Depto FROM Terceirizado;
+
+/* Union All, une e não pode ter repetido, aceita */ 
+ SELECT Nome, Depto FROM Servidor UNION ALL
+ SELECT Nome, Depto FROM Terceirizado;
+
+/* Intersection tem nos dois conjuntos */ 
+ SELECT Nome FROM Conta INTERSECT
+ SELECT Nome FROM Emprestimo;
