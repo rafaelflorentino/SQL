@@ -1,4 +1,5 @@
-/* Modelo Físico Universidade*/
+/* Modelo Físico Universidade */
+
 CREATE DATABASE IF NOT EXISTS db_universidade
 COLLATE utf8mb4_general_ci
 CHARSET utf8mb4;
@@ -132,3 +133,4 @@ VALUES
     
 SELECT * from tb_disciplina;
  
+/* Final arquivo */
